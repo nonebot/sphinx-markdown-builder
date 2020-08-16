@@ -4,6 +4,7 @@ from docutils import nodes
 from pydash import _
 import html2text
 import os
+import re
 import sys
 
 h = html2text.HTML2Text()
@@ -16,7 +17,7 @@ class MarkdownTranslator(Translator):
     tables = []
     tbodys = []
     theads = []
-    
+
     def __init__(self, document, builder=None):
         Translator.__init__(self, document, builder=None)
         self.builder = builder
@@ -52,12 +53,14 @@ class MarkdownTranslator(Translator):
 
     def visit_desc_annotation(self, node):
         # annotation, e.g 'method', 'class'
-        self.add('_')
+        if node.next_node(descend=False, siblings=True):
+            annotation = node.pop(0).astext().strip()
+            node.append(nodes.Text(f"_{annotation}_ "))
 
     def depart_desc_annotation(self, node):
         # annotation, e.g 'method', 'class'
-        self.get_current_output('body')[-1] = self.get_current_output('body')[-1][:-1]
-        self.add('_ ')
+        pass
+
     def visit_desc_addname(self, node):
         # module preroll for class/method
         pass
@@ -75,7 +78,7 @@ class MarkdownTranslator(Translator):
 
     def depart_desc_name(self, node):
         # name of the class/method
-        self.add('(')
+        pass
 
     def visit_desc_content(self, node):
         # the description of the class/method
@@ -97,18 +100,29 @@ class MarkdownTranslator(Translator):
 
     def depart_desc_signature(self, node):
         # the main signature of class/method
-        self.add(')\n')
+        self.add('\n')
 
     def visit_desc_parameterlist(self, node):
         # method/class ctor param list
+        self.add('(')
         pass
 
     def depart_desc_parameterlist(self, node):
         # method/class ctor param list
+        self.add(')\n')
         pass
 
     def visit_desc_parameter(self, node):
         # single method/class ctr param
+        # We remove param annotations
+        m = re.match(r"^([^:=\n]*)(?:[^=\n]*)?(=.*)?", node.astext())
+        param = m.group(1)
+        default = m.group(2)
+        node.children = [
+            nodes.Text(
+                f"{param}{default if default else ''}".replace(" ", "")
+            )
+        ]
         pass
 
     def depart_desc_parameter(self, node):
