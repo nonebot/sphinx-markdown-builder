@@ -169,6 +169,14 @@ class MarkdownTranslator(Translator):
     def depart_literal_emphasis(self, node):
         self.add('*')
 
+    def visit_literal(self, node):
+        self._escape_text = False
+        super().visit_literal(node)
+
+    def depart_literal(self, node):
+        self._escape_text = True
+        super().depart_literal(node)
+
     def visit_title_reference(self, node):
         pass
 
