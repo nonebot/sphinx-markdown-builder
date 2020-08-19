@@ -91,6 +91,10 @@ class MarkdownTranslator(Translator):
         # the description of the class/method
         pass
 
+    def visit_paragraph(self, node):
+        if node.astext().startswith("alias of "):
+            node.clear()
+
     def visit_desc_signature(self, node):
         # the main signature of class/method
         # We dont want methods to be at the same level as classes,
