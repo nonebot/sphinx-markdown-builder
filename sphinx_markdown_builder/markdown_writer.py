@@ -63,6 +63,7 @@ class MarkdownTranslator(Translator):
 
     def visit_desc_addname(self, node):
         # module preroll for class/method
+        node.clear()
         pass
 
     def depart_desc_addname(self, node):
@@ -72,6 +73,7 @@ class MarkdownTranslator(Translator):
     def visit_desc_name(self, node):
         # name of the class/method
         # Escape "__" which is a formating string for markdown
+        self.add('`')
         if node.rawsource.startswith("__"):
             self.add('\\')
         pass
@@ -100,7 +102,7 @@ class MarkdownTranslator(Translator):
 
     def depart_desc_signature(self, node):
         # the main signature of class/method
-        self.add('\n')
+        self.add('`\n\n')
 
     def visit_desc_parameterlist(self, node):
         # method/class ctor param list
@@ -109,7 +111,7 @@ class MarkdownTranslator(Translator):
 
     def depart_desc_parameterlist(self, node):
         # method/class ctor param list
-        self.add(')\n')
+        self.add(')')
         pass
 
     def visit_desc_parameter(self, node):
