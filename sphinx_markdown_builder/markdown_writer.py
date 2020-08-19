@@ -107,11 +107,13 @@ class MarkdownTranslator(Translator):
     def visit_desc_parameterlist(self, node):
         # method/class ctor param list
         self.add('(')
+        self._escape_text = False
         pass
 
     def depart_desc_parameterlist(self, node):
         # method/class ctor param list
         self.add(')')
+        self._escape_text = True
         pass
 
     def visit_desc_parameter(self, node):
