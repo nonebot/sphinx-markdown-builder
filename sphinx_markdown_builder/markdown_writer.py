@@ -101,9 +101,9 @@ class MarkdownTranslator(Translator):
         # If signature has a non null class, thats means it is a signature
         # of a class method
         if ("class" in node.attributes and node.attributes["class"]):
-            self.add('\n#### ')
-        else:
             self.add('\n### ')
+        else:
+            self.add('\n## ')
 
     def depart_desc_signature(self, node):
         # the main signature of class/method
@@ -112,11 +112,24 @@ class MarkdownTranslator(Translator):
 
     def visit_desc_parameterlist(self, node):
         # method/class ctor param list
+        desc = node.parent.parent
+        if (
+            "desctype" in desc.attributes
+            and desc.attributes["desctype"] in ["class", "exception"]
+        ):
+            node.clear()
+            return
         self.add('(')
         pass
 
     def depart_desc_parameterlist(self, node):
         # method/class ctor param list
+        desc = node.parent.parent
+        if (
+            "desctype" in desc.attributes
+            and desc.attributes["desctype"] in ["class", "exception"]
+        ):
+            return
         self.add(')')
         pass
 
