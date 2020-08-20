@@ -53,9 +53,18 @@ class MarkdownTranslator(Translator):
 
     def visit_desc_annotation(self, node):
         # annotation, e.g 'method', 'class'
-        if node.next_node(descend=False, siblings=True):
+        desc = node.parent.parent
+        if (
+            "desctype" in desc.attributes
+            and desc.attributes["desctype"] in ["class", "exception"]
+        ):
             annotation = node.pop(0).astext().strip()
             node.append(nodes.Text(f"_{annotation}_ "))
+        elif (
+            "desctype" in desc.attributes
+            and desc.attributes["desctype"] in ["data"]
+        ):
+            node.clear()
 
     def depart_desc_annotation(self, node):
         # annotation, e.g 'method', 'class'
