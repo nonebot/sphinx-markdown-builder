@@ -62,7 +62,7 @@ class MarkdownTranslator(Translator):
             node.append(nodes.Text(f"_{annotation}_ "))
         elif (
             "desctype" in desc.attributes
-            and desc.attributes["desctype"] in ["data"]
+            and desc.attributes["desctype"] in ["data", "attribute"]
         ):
             node.clear()
 
