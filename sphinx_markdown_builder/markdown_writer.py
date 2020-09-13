@@ -55,8 +55,8 @@ class MarkdownTranslator(Translator):
         # annotation, e.g 'method', 'class'
         desc = node.parent.parent
         if (
-            "desctype" in desc.attributes
-            and desc.attributes["desctype"] in ["class", "exception"]
+            "desctype" in desc.attributes and desc.attributes["desctype"]
+            in ["class", "exception", "method"]
         ):
             annotation = node.pop(0).astext().strip()
             node.append(nodes.Text(f"_{annotation}_ "))
@@ -81,11 +81,8 @@ class MarkdownTranslator(Translator):
 
     def visit_desc_name(self, node):
         # name of the class/method
-        # Escape "__" which is a formating string for markdown
         self.add('`')
         self._escape_text = False
-        if node.rawsource.startswith("__"):
-            self.add('\\')
         pass
 
     def depart_desc_name(self, node):
