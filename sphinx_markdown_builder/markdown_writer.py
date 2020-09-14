@@ -21,6 +21,7 @@ class MarkdownTranslator(Translator):
     def __init__(self, document, builder=None):
         Translator.__init__(self, document, builder=None)
         self.builder = builder
+        print(document)
 
     @property
     def rows(self):
@@ -142,13 +143,11 @@ class MarkdownTranslator(Translator):
     def visit_desc_parameter(self, node):
         # single method/class ctr param
         # We remove param annotations
-        m = re.match(r"^([^:=\n]*)(?:[^=\n]*)?(=.*)?", node.astext())
+        m = re.match(r"^([^:=\n]*)(?:[^=\n]*)?(?:=(.*))?", node.astext())
         param = m.group(1)
         default = m.group(2)
         node.children = [
-            nodes.Text(
-                f"{param}{default if default else ''}".replace(" ", "")
-            )
+            nodes.Text(f"{param}{'=' + default.lstrip() if default else ''}")
         ]
         pass
 
