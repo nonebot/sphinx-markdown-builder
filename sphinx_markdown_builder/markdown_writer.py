@@ -21,7 +21,6 @@ class MarkdownTranslator(Translator):
     def __init__(self, document, builder=None):
         Translator.__init__(self, document, builder=None)
         self.builder = builder
-        print(document)
 
     @property
     def rows(self):
