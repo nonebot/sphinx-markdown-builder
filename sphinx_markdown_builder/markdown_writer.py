@@ -56,7 +56,7 @@ class MarkdownTranslator(Translator):
         desc = node.parent.parent
         if (
             "desctype" in desc.attributes and desc.attributes["desctype"]
-            in ["class", "exception", "method"]
+            in ["class", "exception", "method", "function"]
         ):
             annotation = node.pop(0).astext().strip()
             node.append(nodes.Text(f"_{annotation}_ "))
